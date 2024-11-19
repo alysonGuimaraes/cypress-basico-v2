@@ -221,4 +221,48 @@ describe('Central de Atendimento ao Cliente TAT', () => {
 
         cy.contains('Talking About Testing').should('be.visible')
     })
+
+    /*
+        Exercícios seção 12 do curso basico de cypress
+    */
+
+    it('exibe e esconde as mensagens de sucesso e erro usando o .invoke()', () => {
+        cy.get('.success')
+            .should('not.be.visible')
+            .invoke('show')
+            .should('be.visible')
+            .and('contain', 'Mensagem enviada com sucesso.')
+            .invoke('hide')
+            .should('not.be.visible')
+
+        cy.get('.error')
+            .should('not.be.visible')
+            .invoke('show')
+            .should('be.visible')
+            .and('contain', 'Valide os campos obrigatórios!')
+            .invoke('hide')
+            .should('not.be.visible')
+    })
+
+    it('preenche a area de texto usando o comando invoke', () => {
+        const TEXT = 'Hello invoke!!'
+        cy.get('#open-text-area')
+            .invoke('val', TEXT)
+            .should('have.value', TEXT)
+    })
+
+    it('faz uma requisição HTTP', () => {
+        cy.request({
+            method: 'GET',
+            url: 'https://cac-tat.s3.eu-central-1.amazonaws.com/index.html'
+        }).then((res) => {
+
+            // console.log(res)
+            const {status, statusText, body} = res
+            
+            expect(status).to.eq(200)
+            expect(statusText).to.eq('OK')
+            expect(body).to.include('CAC TAT')
+        })
+    })
 })
